@@ -38,12 +38,12 @@ def search():
     #pdb.set_trace()
     res1 = []
     for a in res:
-      print(a[2])
+      # print(a[2])
       try:
           mm = json.loads(a[2]['meta'])
           res1.append([a[0], a[1] - min(mm['stargazerCount'], 500) / 1000, a[2]])
-      except:
-          print(a[2])
+      except Exception as ex:
+          print(ex, a[2])
 
     res = sorted(res1, key=lambda x: x[1])
     res = res[0:3]

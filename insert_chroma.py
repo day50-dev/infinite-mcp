@@ -55,11 +55,11 @@ def reader(config):
 def getter(fp, path):
   config = Path(os.path.dirname(fp)) / path
   if not os.path.isfile(config):
-    print(f"can't do {fp} no config")
+    print(f"{fp} no config")
     return
   with open(config, 'r') as f:
     if f.read().strip() == "none":
-      print(f"can't do {config} bad json")
+      print(f"{config} bad json")
 
   return config
 
@@ -72,8 +72,8 @@ while True:
     metas = []
     while len(valid_paths) < BATCH_SIZE:
         i += 1
-        sys.stdout.write('.')
-        sys.stdout.flush()
+        #sys.stdout.write('.')
+        #sys.stdout.flush()
         fp = sys.stdin.readline().strip()
         if not os.path.isfile(fp):
             sys.exit(0)
@@ -83,25 +83,28 @@ while True:
             if not meta:
               continue
 
-            config = getter(fp, "_mcp-config.json")
-            if not config:
-              continue
+            #config = getter(fp, "_mcp-config.json")
+            #if not config:
+            #  continue
+            config=[]
 
             oneline = getter(fp, "_one-liner.json")
             if not oneline:
               continue
             try_one = reader(oneline)
             if 'npx' in try_one:
-              if '@' not in try_one:
-                continue
+              pass
             elif 'your' in try_one and 'program' in try_one:
+              print(f"!? {try_one} {fp}")
               continue
             elif 'uvx' in try_one:
-              print(try_one)
+              pass
+              #print(f".. {try_one} {fp}")
             else:
+              print(f"!@ {try_one} {fp}")
               continue
 
-            configs.append(reader(config))
+            #configs.append(reader(config))
             onelines.append(try_one)
             metas.append(reader(meta))
 
@@ -132,7 +135,9 @@ while True:
       for i in range(len(valid_paths)):
         stub = "/".join(valid_paths[i].split("/")[-3:-1])
         stubs.append(stub)
-        meta.append({'file_path': stub, 'meta': metas[i], 'config': configs[i], 'oneline': onelines[i] })
+        #             'config': configs[i], 
+        meta.append({'file_path': stub, 'meta': metas[i], 
+                     'oneline': onelines[i] })
 
       try:
         collection.add(
