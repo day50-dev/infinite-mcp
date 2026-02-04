@@ -55,7 +55,7 @@ def reader(config):
 def getter(fp, path):
   config = Path(os.path.dirname(fp)) / path
   if not os.path.isfile(config):
-    print(f"{fp} no config")
+    print(f"{fp} no {path}")
     return
   with open(config, 'r') as f:
     if f.read().strip() == "none":
