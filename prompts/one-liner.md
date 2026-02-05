@@ -24,6 +24,6 @@ Example:
   "status": "ok"
 }
 
-If you can't figure it out there's a fallback, called "runthis" as the runner_hint. the package_or_path in that case should be the github url
+If you can't figure it out there's a fallback, called "runthis" as the runner_hint. the package_or_path in that case should be the GitHub URL
 
 

@@ -30,14 +30,15 @@ while true; do
   if [[ ! -s "$conf" ]] ; then
     while true; do 
       {
-        echo "<GitHub URL=https://github.com/$base />"
-        echo "<content filname=README.md>"
+        echo "<GitHub URL=\"https://github.com/$base\" />"
+        echo "<content filname=\"README.md\">"
         cat "$i"
         echo "</content>"
         echo "<Intructions>"
         cat prompts/one-liner.md
         echo "</Instructions>"
       } | llc -s "You are a Smart Parser. You read a <content> block and a <Instructions> block and output valid JSON. You are not conversational" > "${conf}.raw"
+
       ec=$?
 
       if [[ "$ec" != "0" ]]; then  
@@ -60,6 +61,7 @@ while true; do
         | jq -r . > "$conf" 2> ${convo}.err
 
       ec=$?
+
       (( tries -- ))
       if [[ "$tries" == 0 ]]; then
         echo "!! $base"
@@ -85,5 +87,5 @@ while true; do
     echo "    $base"
   fi
 done
-rm $convo
-rm ${convo}.err
+
+rm "$convo" "${convo}.err"
