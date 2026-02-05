@@ -3,8 +3,7 @@ which streamdown > /dev/null || pipx install streamdown
 which streamdown > /dev/null || pipx install llcat
 
 model=$1
-modulus=${2:-1}
-residue=${3:-0}
+residue=$2
 key=${KEY:-}
 convo=convo/${residue}.txt
 server=$(redis-cli --raw rpop onequeserver)
@@ -18,7 +17,7 @@ llc() {
     -m $model
 }
 
-echo "using $model@$server %${residue}=${modulus}"
+echo "using $model@$server %${residue}"
 n=0
 while true; do
   i=$(redis-cli --raw rpop oneque)
@@ -41,16 +40,14 @@ while true; do
 
       ec=$?
 
-      if [[ "$ec" != "0" ]]; then  
-        server=$(redis-cli --raw rpop onequeserver)
-        if [[ -z "$server" ]]; then
-          echo "Woops, nothing left"
-          exit
-        fi
-        echo "Advancing to $server"
-      else
-        break
+      [[ "$ec" == 0 ]] && break
+
+      server=$(redis-cli --raw rpop onequeserver)
+      if [[ -z "$server" ]]; then
+        echo "Woops, nothing left"
+        exit
       fi
+      echo "Advancing to $server"
     done
 
     tries=5
@@ -68,23 +65,21 @@ while true; do
         break
       fi
 
-      if [[ "$ec" != 0 ]]; then
-        {
-          cat "${conf}".raw
-          echo "Let's try this again. I ran jq . on that and got"
-          cat "${convo}.err"
-          echo "As a reminder here is the schema:"
-          cat prompts/schema
-          echo "If you can't figure out a valid schema there's explicit instructions for that."
-        } | llc > "${conf}.raw" 
-      else
-        break
-      fi
+      [[ "$ec" == 0 ]] && break
+
+      {
+        cat "${conf}".raw
+        echo "Let's try this again. I ran jq . on that and got"
+        cat "${convo}.err"
+        echo "As a reminder here is the schema:"
+        cat prompts/schema
+        echo "If you can't figure out a valid schema there's explicit instructions for that."
+      } | llc > "${conf}.raw" 
     done
 
     echo "$ec  $base"
   else
-    echo "    $base"
+    echo "   $base"
   fi
 done
 
