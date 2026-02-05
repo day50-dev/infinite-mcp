@@ -41,7 +41,7 @@ def search():
       # print(a[2])
       try:
           mm = json.loads(a[2]['meta'])
-          res1.append([a[0], a[1] - min(mm['stargazerCount'], 500) / 1000, a[2]])
+          res1.append([a[0], a[1], a[2]]) # - min(mm['stargazerCount'], 500) / 1000000, a[2]])
       except Exception as ex:
           print(ex, a[2])
 

@@ -1,6 +1,6 @@
 import torch
 from sentence_transformers import SentenceTransformer
-_model='Octen/Octen-Embedding-8B'
+_model='Qwen/Qwen3-Embedding-0.6B'
 try:
   model = SentenceTransformer(_model, trust_remote_code=True, device="cuda", model_kwargs={ "attn_implementation": "sdpa", 'dtype': torch.bfloat16  })
 except:

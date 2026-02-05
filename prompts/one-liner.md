@@ -10,38 +10,20 @@ Rules:
 - If you cannot identify a runnable command, clearly indicate a fail case.
 
 Output in a simple JSON-like format with these fields:
-- runner_hint: npx | uvx | go | python | unknown
+- runner_hint: npx | uvx | go | python | runthis
 - package_or_path: string or null
-- binary_name: string or null
 - env_vars: list of strings
 - status: ok | fail
 
-Examples:
+Example:
 
-# Node MCP server
 {
   "runner_hint": "npx",
-  "package_or_path": "@brave/brave-search-mcp-server",
-  "binary_name": "brave-search-mcp-server",
-  "env_vars": ["BRAVE_API_KEY"],
+  "package_or_path": "@example/server",
+  "env_vars": ["EXAMPLE_API_KEY"],
   "status": "ok"
 }
 
-# Python CLI
-{
-  "runner_hint": "uvx",
-  "package_or_path": "example-tool",
-  "binary_name": "example-tool",
-  "env_vars": [],
-  "status": "ok"
-}
+If you can't figure it out there's a fallback, called "runthis" as the runner_hint. the package_or_path in that case should be the github url
 
-# Not runnable
-{
-  "runner_hint": "unknown",
-  "package_or_path": null,
-  "binary_name": null,
-  "env_vars": [],
-  "status": "fail"
-}
 

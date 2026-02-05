@@ -16,7 +16,7 @@ from sentence_transformers import SentenceTransformer
 model = None #common.model
 #client = chromadb.PersistentClient(path="./chroma_db")
 #collection = client.get_or_create_collection(name="documents")
-BATCH_SIZE = 2
+BATCH_SIZE = 1
 
 def detect_encoding(file_path):
       with open(file_path, 'rb') as f:

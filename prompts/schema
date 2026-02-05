@@ -1,5 +1,5 @@
 {
-  "one_liner": ["the command broken up as an array, e.g., ['npx','@brave/brave-search-mcp-server']"],
-  "requires": ["required environment variables exactly as documented, e.g., 'BRAVE_API_KEY'. Leave empty array if none are required."],
+  "one_liner": ["the command broken up as an array, e.g., ['npx','@example/example-program']"],
+  "requires": ["required environment variables exactly as documented, e.g., 'EXAMPLE_API_KEY'. Leave empty array if none are required."],
   "status": "ok | fail"
 }
