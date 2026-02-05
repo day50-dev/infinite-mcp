@@ -2,9 +2,9 @@
 which streamdown > /dev/null || pipx install streamdown
 which streamdown > /dev/null || pipx install llcat
 
-model=${2:-qwen3:1.7b}
-modulus=${3:-1}
-residue=${4:-0}
+model=$1
+modulus=${2:-1}
+residue=${3:-0}
 key=${KEY:-}
 convo=convo/${residue}.txt
 server=$(redis-cli --raw rpop onequeserver)
@@ -42,6 +42,10 @@ while true; do
 
       if [[ "$ec" != "0" ]]; then  
         server=$(redis-cli --raw rpop onequeserver)
+        if [[ -z "$server" ]]; then
+          echo "Woops, nothing left"
+          exit
+        fi
         echo "Advancing to $server"
       else
         break
