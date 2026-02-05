@@ -11,13 +11,12 @@ import chardet
 import signal
 import re
 import spacy
-import common
 from sentence_transformers import SentenceTransformer
 
-model = common.model
-client = chromadb.PersistentClient(path="./chroma_db")
-collection = client.get_or_create_collection(name="documents")
-BATCH_SIZE = 8
+model = None #common.model
+#client = chromadb.PersistentClient(path="./chroma_db")
+#collection = client.get_or_create_collection(name="documents")
+BATCH_SIZE = 2
 
 def detect_encoding(file_path):
       with open(file_path, 'rb') as f:
@@ -76,11 +75,12 @@ while True:
         #sys.stdout.flush()
         fp = sys.stdin.readline().strip()
         if not os.path.isfile(fp):
-            sys.exit(0)
+            break
 
         try:
             meta = getter(fp, "_meta-info.json")
             if not meta:
+              print(f"?? {fp} meta_info")
               continue
 
             #config = getter(fp, "_mcp-config.json")
@@ -90,6 +90,7 @@ while True:
 
             oneline = getter(fp, "_one-liner.json")
             if not oneline:
+              print(f"!! {fp} one-liner")
               continue
             try_one = reader(oneline)
             if 'npx' in try_one:
@@ -97,6 +98,10 @@ while True:
             elif 'your' in try_one and 'program' in try_one:
               print(f"!? {try_one} {fp}")
               continue
+            elif 'go", "run' in try_one:
+              pass
+            elif 'uv", "tool' in try_one:
+              pass
             elif 'uvx' in try_one:
               pass
               #print(f".. {try_one} {fp}")
@@ -119,6 +124,11 @@ while True:
     if len(texts) == 0:
         break
 
+    if model == None:
+      import common
+      model = common.model
+      client = chromadb.PersistentClient(path="./chroma_db")
+      collection = client.get_or_create_collection(name="documents")
     try:
       with torch.no_grad():
           embeddings = model.encode(
@@ -146,8 +156,10 @@ while True:
             ids=[j.replace('/', '_') for j in stubs],
             metadatas=meta
         )
-      except:
+      except Exception as ex:
+        print(ex)
         pass
+
       torch.cuda.empty_cache()
       counter += 1
 
@@ -156,8 +168,11 @@ while True:
         counter = 0
 
     except RuntimeError as e:
+      print(e)
       i -= BATCH_SIZE
       move_batch(-1)
       counter = 0
       continue
 
+    except Exception as ex:
+      print(ex)
