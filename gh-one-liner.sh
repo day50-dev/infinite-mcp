@@ -1,6 +1,6 @@
 #!/bin/bash
 which streamdown > /dev/null || pipx install streamdown
-which streamdown > /dev/null || pipx install llcat
+which llcat > /dev/null || pipx install llcat
 
 model=$1
 residue=$2
